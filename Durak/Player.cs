@@ -8,14 +8,12 @@ namespace Durak
 {
     public class Player
     {
-        public string NickName;
+        public readonly string NickName;
         public List<Card> Hand = new();
-        public int MovingPriority;
 
         public Player(string nickName, int movingPriority)
         {
             NickName = nickName;
-            MovingPriority = movingPriority;
         }
 
         public override string ToString()

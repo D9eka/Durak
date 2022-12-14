@@ -46,12 +46,19 @@ namespace Durak
             }
 
             var result = new StringBuilder("|");
-            for (int i = 0; i < leftSpace; i++)
-                result.Append(" ");
+            result.Append(new string(' ', leftSpace + 1));
             result.Append(Power + " " + Mark);
-            for (int i = 0; i < rightSpace; i++)
-                result.Append(" ");
+            result.Append(new string(' ', rightSpace + 1));
             result.Append("|");
+            return result.ToString();
+        }
+
+        public string CardsToString(List<Card> list)
+        {
+            var result = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+                result.Append(String.Format("({0}) {1}\n", i + 1, list[i].ToString()));
+
             return result.ToString();
         }
     }

@@ -29,5 +29,32 @@ namespace Durak
                 }
             }
         }
+
+        public void PutCard(Card card)
+        {
+            for (int i = 0; i < this.AttackCards.Length; i++)
+                if (this.AttackCards[i] == null)
+                {
+                    this.AttackCards[i] = card;
+                    break;
+                }
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            for (int i = 0; i < this.AttackCards.Length; i++)
+            {
+                if (this.AttackCards[i] != null)
+                {
+                    result.Append(string.Format("({0}) {1} ", i + 1, this.AttackCards[i]));
+                    if (this.DefendCards[i] != null)
+                        result.Append(this.DefendCards[i] + "\n");
+                    else
+                        result.Append("|                  |\n");
+                }
+            }
+            return result.ToString();
+        }
     }
 }
