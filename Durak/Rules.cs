@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace Durak
     public static class Rules
     {
         public static int CardsOnHand = 6;
+        public static int MaxPlayers = 6;
 
         public static void GiveCardToPlayer(Player player, Table table)
         {
@@ -39,16 +41,9 @@ namespace Durak
                 game.EndMove = true;
                 return;
             }
-            if (!int.TryParse(input, out int num))
-            {
-                Console.WriteLine("Не удалось найти карту. Проверьте правильность введённых чисел");
-                game.PlayerAttack(player);
-                return;
-            }
 
-            if (int.Parse(input) - 1 > player.Hand.Count)
+            if (!CheckInput(input, player.Hand.Count))
             {
-                Console.WriteLine("У вас нет столько карт. Введите другое число");
                 game.PlayerAttack(player);
                 return;
             }
@@ -76,10 +71,13 @@ namespace Durak
                 return;
             }
         }
-        public static void CheckDefendMove(Game game, Player defendPlayer, string input, Table table)
+
+        public static void CheckDefendMove(Game game, Player attackPlayer, Player defendPlayer, string input, Table table)
         {
             if (input.ToLower() == "взять")
             {
+                var throwsCardsMove = game.PlayerThrowsCards(attackPlayer, defendPlayer);
+                CheckThrowsCardsMove(game, attackPlayer, defendPlayer, throwsCardsMove, table);
                 table.RemoveCards(defendPlayer.Hand);
                 defendPlayer.Hand.Sort();
                 game.CurrentMove++;
@@ -87,19 +85,12 @@ namespace Durak
                 return;
             }
 
-            if (!CheckInput(input))
+            if (!CheckInput(input, defendPlayer.Hand.Count))
             {
-                Console.WriteLine("Не удалось найти карту. Проверьте правильность введённых чисел");
                 game.PlayerDefend(defendPlayer);
                 return;
             }
 
-            if (!int.TryParse(input, out int num))
-            {
-                Console.WriteLine("Не удалось найти карту. Проверьте правильность введённых чисел");
-                game.PlayerDefend(defendPlayer);
-                return;
-            }
             int defendCardNum = int.Parse(input) - 1;
             int attackCardNum = CardsOnHand - 1;
 
@@ -133,9 +124,42 @@ namespace Durak
             }
         }
 
-        private static bool CheckInput(string input)
+        public static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, string input, Table table)
         {
-            return int.TryParse(input, out int num);
+            if (input.ToLower() == "бито")
+            {
+                Console.WriteLine("Завершение хода...");
+                game.EndMove = true;
+                return;
+            }
+
+            var cardsNumber = input.Split();
+            for(int i = cardsNumber.Length - 1; i >= 0; i--)
+            {
+                if (!CheckInput(cardsNumber[i], attackPlayer.Hand.Count))
+                {
+                    game.PlayerThrowsCards(attackPlayer, defendPlayer);
+                    return;
+                }
+                CheckAttackMove(game, attackPlayer, cardsNumber[i], table);
+            }               
+        }
+
+        private static bool CheckInput(string input, int cardsCount)
+        {
+            if (!int.TryParse(input, out int num))
+            {
+                Console.WriteLine("Не удалось найти карту. Проверьте правильность введённых чисел");
+                return false;
+            }
+
+            if (int.Parse(input) - 1 > cardsCount)
+            {
+                Console.WriteLine("У вас нет столько карт. Введите другое число");
+                return false;
+            }
+
+            return true;
         }
 
         private static int CardsCount(Card[] array)

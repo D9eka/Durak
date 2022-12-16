@@ -8,6 +8,5 @@ namespace Durak
 {
     internal class Menu
     {
-
     }
 }

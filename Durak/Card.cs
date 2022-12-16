@@ -53,7 +53,7 @@ namespace Durak
             return result.ToString();
         }
 
-        public string CardsToString(List<Card> list)
+        public static string CardsToString(List<Card> list)
         {
             var result = new StringBuilder();
             for (int i = 0; i < list.Count; i++)

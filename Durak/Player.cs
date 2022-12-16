@@ -11,9 +11,14 @@ namespace Durak
         public readonly string NickName;
         public List<Card> Hand = new();
 
-        public Player(string nickName, int movingPriority)
+        public Player(string nickName)
         {
             NickName = nickName;
+        }
+
+        public bool HaveCards()
+        {
+            return Hand.Count > 0;
         }
 
         public override string ToString()
