@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Durak
 {
-    public class Screen       
+    public class Screen
     {
         public static char AngleBorder = '+';
         public static char VerticalBorder = '|';
@@ -61,7 +56,7 @@ namespace Durak
                 else if (result[i].Count > result[i + 1].Count)
                     EqualizeScreensHeight(result[i + 1], result[i].Count);
             }
-                
+
 
             for (int i = 0; i < result[0].Count; i++)
             {
@@ -77,7 +72,7 @@ namespace Durak
             var screenEnd = screen[screen.Count - 1];
             screen[screen.Count - 1] = VerticalBorder + new string(' ', screenEnd.Length - 2) + VerticalBorder;
 
-            while(screen.Count != height - 1)
+            while (screen.Count != height - 1)
                 screen.Add(VerticalBorder + new string(' ', screenEnd.Length - 2) + VerticalBorder);
             screen.Add(screenEnd);
         }
@@ -160,7 +155,7 @@ namespace Durak
         }
     }
 
-    public class PlayerScreen : Screen 
+    public class PlayerScreen : Screen
     {
         Player Player;
         string[] Move;
@@ -227,7 +222,7 @@ namespace Durak
             CreateTitle(tableScreen, "Стол", width);
             tableScreen.Add(emptyLine);
             tableScreen.Add(cardsBorder);
-            tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, CreateJustifyString("Атака", Card.Width), 
+            tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, CreateJustifyString("Атака", Card.Width),
                                                                              CreateJustifyString("Защита", Card.Width)));
             tableScreen.Add(cardsBorder);
             tableScreen.Add(emptyLine);
@@ -235,7 +230,7 @@ namespace Durak
             for (int i = 0; i < Table.AttackCards.Length; i++)
             {
                 tableScreen.Add(cardsBorder);
-                tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, GetCard(Table.AttackCards[i]), 
+                tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, GetCard(Table.AttackCards[i]),
                                                                                  GetCard(Table.DefendCards[i])));
                 tableScreen.Add(cardsBorder);
                 tableScreen.Add(emptyLine);

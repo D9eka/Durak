@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Durak
+﻿namespace Durak
 {
     public class Player
     {
@@ -15,15 +13,6 @@ namespace Durak
         public bool HaveCards()
         {
             return Hand.Count > 0;
-        }
-
-        public override string ToString()
-        {
-            var str = new StringBuilder();
-            str.Append("Игрок" + NickName + ":\n");
-            foreach (var card in Hand)
-                str.Append(card.ToString() + '\n');
-            return str.ToString();
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Durak
+﻿namespace Durak
 {
     public class Program
     {

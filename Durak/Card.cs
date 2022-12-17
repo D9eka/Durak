@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Durak
+﻿namespace Durak
 {
     public class Card : IComparable<Card>
     {
@@ -25,15 +23,6 @@ namespace Durak
         public override string ToString()
         {
             return Screen.CreateJustifyString(Power.ToString() + ' ' + Mark.ToString(), Width);
-        }
-
-        public static string CardsToString(List<Card> list)
-        {
-            var result = new StringBuilder();
-            for (int i = 0; i < list.Count; i++)
-                result.Append(String.Format("({0}) {1}\n", i + 1, list[i].ToString()));
-
-            return result.ToString();
         }
     }
 
