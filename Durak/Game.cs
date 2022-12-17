@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Durak
+﻿namespace Durak
 {
     public class Game
     {
@@ -30,7 +23,7 @@ namespace Durak
 
             CurrentMove = new Random().Next(Players.Count);
             var playersWin = 0;
-            
+
             while (Players.Count() != 1)
             {
                 var attackPlayer = Players[CurrentMove % Players.Count];
@@ -47,7 +40,7 @@ namespace Durak
                     var defendMove = PlayerDefend(defendPlayer);
                     Rules.CheckDefendMove(this, attackPlayer, defendPlayer, defendMove, Table);
                 }
-                
+
                 Rules.GiveCardToPlayer(attackPlayer, Table);
                 Rules.GiveCardToPlayer(defendPlayer, Table);
                 Table.RemoveCards(Table.DiscardPile);
@@ -60,10 +53,7 @@ namespace Durak
                 if (player.Hand.Count > 0)
                 {
                     Console.WriteLine("{0} - дурак!", player.NickName);
-                    Console.WriteLine("Хотите сыграть ещё раз? (да/нет)");
-                    var input = Console.ReadLine();
-                    if (input.ToLower() == "да")
-                        Program.Main();
+                    Thread.Sleep(5000);
                     return;
                 }
         }
@@ -79,54 +69,34 @@ namespace Durak
                 }
         }
 
-        public string PlayerAttack(Player attackPlayer)
+        public int PlayerAttack(Player attackPlayer)
         {
             Thread.Sleep(2000);
             Console.Clear();
-            Console.WriteLine("{0}, Вы атакуете\n" +
-                              "Козырь - {1}\n" +
-                              "Ваша рука:\n" +
-                              "{2}" +
-                              "Карты на столе:\n" +
-                              "    |      Атака       | |      Защита      |\n" +
-                              "{3}\nВведите число карты, которой вы хотите атаковать" +
-                              "\nВведите \"Бито\", чтобы завершить ход",
-                              attackPlayer.NickName, Table.Deck.Trumb, Card.CardsToString(attackPlayer.Hand), Table.ToString());
-            return Console.ReadLine();
+            Screen playerScreen = new PlayerScreen(attackPlayer, new string[] { "Вы атакуете!", "Бито" });
+            Screen tableScreen = new TableScreen(Table);
+            var selectedIndex = Screen.Run(attackPlayer.Hand.Count + 1, playerScreen, tableScreen);
+            return selectedIndex;
         }
 
-        public string PlayerDefend(Player defendPlayer)
+        public int PlayerDefend(Player defendPlayer)
         {
             Thread.Sleep(2000);
             Console.Clear();
-            Console.WriteLine("{0}, Вы защищаетесь\n" +
-                              "Козырь - {1}\n" +
-                              "Ваша рука:\n" +
-                              "{2}\n" +
-                              "Карты на столе:\n" +
-                              "    |      Атака       | |      Защита      |\n" +
-                              "{3}" +
-                              "Введите число карты, которой вы хотите покрыть\n" +
-                              "Введите \"Взять\", чтобы завершить ход",
-                              defendPlayer.NickName, Table.Deck.Trumb, Card.CardsToString(defendPlayer.Hand), Table.ToString());
-            return Console.ReadLine();
+            Screen playerScreen = new PlayerScreen(defendPlayer, new string[] { "Вы защищаетесь!", "Взять" });
+            Screen tableScreen = new TableScreen(Table);
+            var selectedIndex = Screen.Run(defendPlayer.Hand.Count + 1, playerScreen, tableScreen);
+            return selectedIndex;
         }
 
-        public string PlayerThrowsCards(Player attackPlayer, Player defendPlayer)
+        public int PlayerThrowsCards(Player attackPlayer, Player defendPlayer)
         {
             Thread.Sleep(2000);
             Console.Clear();
-            Console.WriteLine("{0}, {1} берёт карты\n" +
-                              "Козырь - {2}\n" +
-                              "Ваша рука:\n" +
-                              "{3}\n" +
-                              "Карты на столе:\n" +
-                              "    |      Атака       | |      Защита      |\n" +
-                              "{4}" +
-                              "Введите числа карт, которые вы хотите подкинуть\n" +
-                              "Введите \"Бито\", чтобы завершить ход",
-                              attackPlayer.NickName, defendPlayer.NickName, Table.Deck.Trumb, Card.CardsToString(attackPlayer.Hand), Table.ToString());
-            return Console.ReadLine();
+            Screen playerScreen = new PlayerScreen(attackPlayer, new string[] { defendPlayer.NickName + " берет!", "Бито" });
+            Screen tableScreen = new TableScreen(Table);
+            var selectedIndex = Screen.Run(attackPlayer.Hand.Count + 1, playerScreen, tableScreen);
+            return selectedIndex;
         }
     }
 }

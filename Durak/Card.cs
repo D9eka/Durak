@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Durak
 {
     public class Card : IComparable<Card>
     {
+        public static int Width = 20;
         public Power Power;
         public Mark Mark;
 
@@ -27,30 +24,7 @@ namespace Durak
 
         public override string ToString()
         {
-            var freeSpace = 15;
-            freeSpace -= Power.ToString().Length;
-            freeSpace -= Mark.ToString().Length;
-
-            int leftSpace;
-            int rightSpace;
-
-            if (freeSpace % 2 == 0)
-            {
-                leftSpace = freeSpace / 2;
-                rightSpace = freeSpace / 2;
-            }
-            else
-            {
-                leftSpace = freeSpace / 2;
-                rightSpace = (freeSpace / 2) + 1;
-            }
-
-            var result = new StringBuilder("|");
-            result.Append(new string(' ', leftSpace + 1));
-            result.Append(Power + " " + Mark);
-            result.Append(new string(' ', rightSpace + 1));
-            result.Append("|");
-            return result.ToString();
+            return Screen.CreateJustifyString(Power.ToString() + ' ' + Mark.ToString(), Width);
         }
 
         public static string CardsToString(List<Card> list)

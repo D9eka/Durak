@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Durak
+﻿namespace Durak
 {
     public static class Rules
     {
@@ -27,9 +20,9 @@ namespace Durak
             player.Hand.Sort();
         }
 
-        public static void CheckAttackMove(Game game, Player player, string input, Table table)
+        public static void CheckAttackMove(Game game, Player player, int selectedIndex, Table table)
         {
-            if (input.ToLower() == "бито")
+            if (selectedIndex == player.Hand.Count)
             {
                 if (table.AttackCards[0] == null)
                 {
@@ -42,13 +35,7 @@ namespace Durak
                 return;
             }
 
-            if (!CheckInput(input, player.Hand.Count))
-            {
-                game.PlayerAttack(player);
-                return;
-            }
-
-            Card card = player.Hand[int.Parse(input) - 1];
+            Card card = player.Hand[selectedIndex];
 
             if (table.AttackCards[0] == null)
             {
@@ -72,9 +59,9 @@ namespace Durak
             }
         }
 
-        public static void CheckDefendMove(Game game, Player attackPlayer, Player defendPlayer, string input, Table table)
+        public static void CheckDefendMove(Game game, Player attackPlayer, Player defendPlayer, int selectedIndex, Table table)
         {
-            if (input.ToLower() == "взять")
+            if (selectedIndex == defendPlayer.Hand.Count)
             {
                 var throwsCardsMove = game.PlayerThrowsCards(attackPlayer, defendPlayer);
                 CheckThrowsCardsMove(game, attackPlayer, defendPlayer, throwsCardsMove, table);
@@ -85,13 +72,6 @@ namespace Durak
                 return;
             }
 
-            if (!CheckInput(input, defendPlayer.Hand.Count))
-            {
-                game.PlayerDefend(defendPlayer);
-                return;
-            }
-
-            int defendCardNum = int.Parse(input) - 1;
             int attackCardNum = CardsOnHand - 1;
 
             for (int i = 0; i < table.AttackCards.Length - 1; i++)
@@ -102,13 +82,13 @@ namespace Durak
                 }
 
             Card attackCard = table.AttackCards[attackCardNum];
-            Card defendCard = defendPlayer.Hand[defendCardNum];
+            Card defendCard = defendPlayer.Hand[selectedIndex];
 
             if ((defendCard.Mark == attackCard.Mark && defendCard.Power > attackCard.Power) ||
                (defendCard.Mark == table.Deck.Trumb && attackCard.Mark != table.Deck.Trumb))
             {
-                table.DefendCards[attackCardNum] = defendPlayer.Hand[defendCardNum];
-                defendPlayer.Hand.Remove(defendPlayer.Hand[defendCardNum]);
+                table.DefendCards[attackCardNum] = defendPlayer.Hand[selectedIndex];
+                defendPlayer.Hand.Remove(defendPlayer.Hand[selectedIndex]);
             }
             else
             {
@@ -124,42 +104,17 @@ namespace Durak
             }
         }
 
-        public static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, string input, Table table)
+        public static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, int selectedIndex, Table table)
         {
-            if (input.ToLower() == "бито")
+            if (selectedIndex == attackPlayer.Hand.Count)
             {
                 Console.WriteLine("Завершение хода...");
                 game.EndMove = true;
                 return;
             }
-
-            var cardsNumber = input.Split();
-            for(int i = cardsNumber.Length - 1; i >= 0; i--)
-            {
-                if (!CheckInput(cardsNumber[i], attackPlayer.Hand.Count))
-                {
-                    game.PlayerThrowsCards(attackPlayer, defendPlayer);
-                    return;
-                }
-                CheckAttackMove(game, attackPlayer, cardsNumber[i], table);
-            }               
-        }
-
-        private static bool CheckInput(string input, int cardsCount)
-        {
-            if (!int.TryParse(input, out int num))
-            {
-                Console.WriteLine("Не удалось найти карту. Проверьте правильность введённых чисел");
-                return false;
-            }
-
-            if (int.Parse(input) - 1 > cardsCount)
-            {
-                Console.WriteLine("У вас нет столько карт. Введите другое число");
-                return false;
-            }
-
-            return true;
+            CheckAttackMove(game, attackPlayer, selectedIndex, table);
+            CheckThrowsCardsMove(game, attackPlayer, defendPlayer, game.PlayerThrowsCards(attackPlayer, defendPlayer), table);
+            return;
         }
 
         private static int CardsCount(Card[] array)
