@@ -2,8 +2,8 @@
 {
     public static class Rules
     {
-        public static int CardsOnHand = 6;
-        public static int MaxPlayers = 6;
+        public readonly static int CardsOnHand = 6;
+        public readonly static int MaxPlayers = 6;
 
         public static void GiveCardToPlayer(Player player, Table table)
         {
@@ -104,7 +104,7 @@
             }
         }
 
-        public static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, int selectedIndex, Table table)
+        private static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, int selectedIndex, Table table)
         {
             if (selectedIndex == attackPlayer.Hand.Count)
             {

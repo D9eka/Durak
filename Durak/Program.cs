@@ -16,13 +16,8 @@
             Screen mainMenu = new MenuScreen("Дурак", mainMenuMenu);
             var selectedIndex = Screen.Run(mainMenuMenu.Count, mainMenu);
 
-            switch (selectedIndex)
-            {
-                case 1:
-                    return;
-                default:
-                    break;
-            }
+            if (selectedIndex == 1)
+                return;
 
             var choosePlayerCountMenuMenu = new List<string> { "2", "3", "4", "5", "6" };
             Screen choosePlayerCountMenu = new MenuScreen("Выберите количество игроков", choosePlayerCountMenuMenu);

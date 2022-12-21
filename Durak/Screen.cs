@@ -11,7 +11,7 @@ namespace Durak
         public static int SelectedIndex;
         static ConsoleKey[] UpKeys = new ConsoleKey[] { ConsoleKey.W, ConsoleKey.UpArrow };
         static ConsoleKey[] DownKeys = new ConsoleKey[] { ConsoleKey.S, ConsoleKey.DownArrow };
-        static ConsoleKey[] ChoiceKeys = new ConsoleKey[] { ConsoleKey.Enter, ConsoleKey.Spacebar };
+        static ConsoleKey[] ChoiceKeys = new ConsoleKey[] { ConsoleKey.Spacebar, ConsoleKey.Enter };
 
         public static int Run(int menuLength, params Screen[] screens)
         {
@@ -43,7 +43,7 @@ namespace Durak
             return SelectedIndex;
         }
 
-        public static void Write(params Screen[] screens)
+        private static void Write(params Screen[] screens)
         {
             var result = new List<string>[screens.Length];
             for (int i = 0; i < screens.Length; i++)
@@ -116,7 +116,7 @@ namespace Durak
     public class MenuScreen : Screen
     {
         public readonly string Title;
-        public List<string> Menu;
+        public readonly List<string> Menu;
 
         public MenuScreen(string title, List<string> menu)
         {
@@ -253,7 +253,7 @@ namespace Durak
             return tableScreen;
         }
 
-        static string GetCard(Card card)
+        private static string GetCard(Card card)
         {
             if (card == null)
                 return CreateJustifyString(" ", Card.Width);

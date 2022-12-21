@@ -16,14 +16,14 @@ namespace Durak
             Trumb = ChooseTrump();
         }
 
-        public void CreateDeck()
+        private void CreateDeck()
         {
             for (int i = 0; i < Enum.GetNames(typeof(Power)).Length; i++)
                 for (int j = 0; j < Enum.GetNames(typeof(Mark)).Length; j++)
                     Deck.Add(new Card((Power)i, (Mark)j));
         }
 
-        public void Shuffle()
+        private void Shuffle()
         {
             for (int i = Deck.Count - 1; i > 0; i--)
             {
@@ -32,7 +32,7 @@ namespace Durak
             }
         }
 
-        public Mark ChooseTrump()
+        private Mark ChooseTrump()
         {
             return (Mark)Random.Next(Enum.GetNames(typeof(Mark)).Length - 1);
         }
