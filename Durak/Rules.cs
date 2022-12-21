@@ -41,6 +41,7 @@
             {
                 table.PutCard(card);
                 player.Hand.Remove(card);
+                Console.WriteLine("Подождите...");
             }
             else
             {
@@ -50,10 +51,10 @@
                     {
                         table.PutCard(card);
                         player.Hand.Remove(card);
+                        Console.WriteLine("Подождите...");
                         return;
                     }
                 Console.WriteLine("Вы не можете положить эту карту");
-                Console.WriteLine();
                 game.PlayerAttack(player);
                 return;
             }
@@ -63,6 +64,7 @@
         {
             if (selectedIndex == defendPlayer.Hand.Count)
             {
+                Console.WriteLine("Подождите...");
                 var throwsCardsMove = game.PlayerThrowsCards(attackPlayer, defendPlayer);
                 CheckThrowsCardsMove(game, attackPlayer, defendPlayer, throwsCardsMove, table);
                 table.RemoveCards(defendPlayer.Hand);
@@ -102,6 +104,8 @@
                 game.EndMove = true;
                 return;
             }
+            else
+                Console.WriteLine("Подождите...");
         }
 
         private static void CheckThrowsCardsMove(Game game, Player attackPlayer, Player defendPlayer, int selectedIndex, Table table)

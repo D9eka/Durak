@@ -25,7 +25,7 @@
 
             var playersCount = selectedIndex + 2;
 
-            Console.WriteLine("Введите ники игроков (в одну строку)");
+            Console.WriteLine("Введите ники игроков\n(в одну строку)");
             var input = Console.ReadLine().Split();
 
             while (!IsNickNamesCorrect(input, playersCount))
@@ -51,7 +51,10 @@
 
         private static bool IsNickNamesCorrect(string[] input, int playersCount)
         {
-            if (input.Length < playersCount)
+            if (input.Length != playersCount)
+                return false;
+
+            if (input[input.Length - 1] == "")
                 return false;
 
             return true;

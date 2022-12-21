@@ -85,6 +85,13 @@ namespace Durak
             screen.Add(boarder);
         }
 
+        public static void AddControlHint(List<string> screen, int width)
+        {
+            screen.Add(CreateJustifyString("↑, W - переместить вверх", width));
+            screen.Add(CreateJustifyString("↓, S - переместить вниз", width));
+            screen.Add(CreateJustifyString("Space, Enter - подтвердить", width));
+        }
+
         public static string CreateJustifyString(string text, int width)
         {
             var freeSpace = width - text.Length - 2;
@@ -126,7 +133,7 @@ namespace Durak
 
         public override List<string> CreateScreen()
         {
-            var width = Math.Max(Card.Width, Title.Length) + 6;
+            var width = Math.Max(Card.Width + 4, Title.Length) + 6;
             if (width % 2 == 1)
                 width++;
 
@@ -150,9 +157,11 @@ namespace Durak
             }
 
             mainMenuScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
+            AddControlHint(mainMenuScreen, width);
+            mainMenuScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
 
-            Console.WindowWidth = Math.Min(width + 3, Console.LargestWindowWidth);
-            Console.WindowHeight = Math.Min(mainMenuScreen.Count + 2, Console.LargestWindowHeight);
+            Console.WindowWidth = Math.Min(width, Console.LargestWindowWidth);
+            Console.WindowHeight = Math.Min(mainMenuScreen.Count + 3, Console.LargestWindowHeight);
 
             return mainMenuScreen;
         }
@@ -172,7 +181,7 @@ namespace Durak
         public override List<string> CreateScreen()
         {
             var playerScreen = new List<string>();
-            var width = Math.Max(Card.Width, Player.NickName.Length + 1 + Move[0].Length) + 6;
+            var width = Math.Max(Card.Width + 4, Player.NickName.Length + 1 + Move[0].Length) + 6;
             if (width % 2 == 1)
                 width++;
 
@@ -205,9 +214,13 @@ namespace Durak
             playerScreen.Add(cardBorder);
 
             playerScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
+            AddControlHint(playerScreen, width);
+            playerScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
 
-            Console.WindowWidth = Math.Min(width + 1, Console.LargestWindowWidth) + 1 + Card.Width * 2 + 5;
-            Console.WindowHeight = Math.Min(playerScreen.Count + 2, Console.LargestWindowHeight);
+            var minimumHeight = 42;
+            var tableWidth = Card.Width * 2 + 5;
+            Console.WindowWidth = Math.Min(width + 1, Console.LargestWindowWidth) + 1 + tableWidth;
+            Console.WindowHeight = Math.Min(Math.Max(playerScreen.Count + 3, minimumHeight), Console.LargestWindowHeight);
 
             return playerScreen;
         }
@@ -248,8 +261,8 @@ namespace Durak
             tableScreen.Add(CreateJustifyString(CreateJustifyString("Козырь - " + Table.Deck.Trumb, width - 4), width));
             tableScreen.Add(CreateJustifyString(AngleBorder + new string(HorizontalBorder, width - 6) + AngleBorder, width));
             tableScreen.Add(emptyLine);
-
             tableScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
+
             return tableScreen;
         }
 
