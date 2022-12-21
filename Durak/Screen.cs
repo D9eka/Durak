@@ -161,7 +161,7 @@ namespace Durak
             mainMenuScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
 
             Console.WindowWidth = Math.Min(width, Console.LargestWindowWidth);
-            Console.WindowHeight = Math.Min(mainMenuScreen.Count + 3, Console.LargestWindowHeight);
+            Console.WindowHeight = Math.Min(mainMenuScreen.Count + 4, Console.LargestWindowHeight);
 
             return mainMenuScreen;
         }
