@@ -4,9 +4,17 @@ namespace Durak
 {
     public class CardDeck
     {
-        public List<Card> Deck = new();
-        public Mark Trumb;
-        public Random random = new();
+        public readonly List<Card> Deck;
+        public readonly Mark Trumb;
+        private Random Random = new();
+
+        public CardDeck()
+        {
+            Deck = new();
+            CreateDeck();
+            Shuffle();
+            Trumb = ChooseTrump();
+        }
 
         public void CreateDeck()
         {
@@ -19,14 +27,14 @@ namespace Durak
         {
             for (int i = Deck.Count - 1; i > 0; i--)
             {
-                int j = random.Next(i + 1);
+                int j = Random.Next(i + 1);
                 (Deck[i], Deck[j]) = (Deck[j], Deck[i]);
             }
         }
 
-        public void ChooseTrump()
+        public Mark ChooseTrump()
         {
-            Trumb = (Mark)random.Next(Enum.GetNames(typeof(Mark)).Length - 1);
+            return (Mark)Random.Next(Enum.GetNames(typeof(Mark)).Length - 1);
         }
 
         public override string ToString()

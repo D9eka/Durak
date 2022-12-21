@@ -5,7 +5,8 @@
         public static void Main()
         {
             Console.WindowHeight = Console.LargestWindowHeight;
-            Console.WindowWidth = 80;
+            Console.WindowLeft = 0;
+            Console.WindowTop = 0;
             Console.Title = "Durak";
 
             Console.Clear();
@@ -23,23 +24,22 @@
                     break;
             }
 
-            Console.WriteLine("Введите количество игроков");
-            var playersCount = int.Parse(Console.ReadLine());
-            if (playersCount < 0 || playersCount > Rules.MaxPlayers)
-                throw new Exception("Невозможно создать игру с таким количеством игроков");
+            var choosePlayerCountMenuMenu = new List<string> { "2", "3", "4", "5", "6" };
+            Screen choosePlayerCountMenu = new MenuScreen("Выберите количество игроков", choosePlayerCountMenuMenu);
+            selectedIndex = Screen.Run(choosePlayerCountMenuMenu.Count, choosePlayerCountMenu);
 
-            var players = new List<Player>();
+            var playersCount = selectedIndex + 2;
 
-            Console.WriteLine("Введите ники игроков (в одну строку, максимум 10 символов)");
+            Console.WriteLine("Введите ники игроков (в одну строку)");
             var input = Console.ReadLine().Split();
 
-            if (input.Length < playersCount)
-                throw new Exception("Количество ником отличается от количества игроков");
+            while (!IsNickNamesCorrect(input, playersCount))
+            {
+                Console.WriteLine("Количество ников отличается от количества игроков. Необходимо ввести {0} ника (каждый ник отделён пробелом)", playersCount);
+                input = Console.ReadLine().Split();
+            }
 
-            foreach (var nickName in input)
-                if (nickName.Length > 10)
-                    throw new Exception("Один из ников слишком длинный");
-
+            var players = new List<Player>();
             for (int i = 0; i < playersCount; i++)
                 players.Add(new Player(input[i]));
 
@@ -51,9 +51,15 @@
             selectedIndex = Screen.Run(restartMenuMenu.Count, restartMenu);
 
             if (selectedIndex == 0)
-            {
                 Program.Main();
-            }
+        }
+
+        private static bool IsNickNamesCorrect(string[] input, int playersCount)
+        {
+            if (input.Length < playersCount)
+                return false;
+
+            return true;
         }
     }
 }

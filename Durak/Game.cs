@@ -2,22 +2,19 @@
 {
     public class Game
     {
-        public List<Player> Players = new();
-        public Table Table = new();
+        public readonly List<Player> Players;
+        public readonly Table Table;
         public int CurrentMove;
         public bool EndMove = false;
 
         public Game(List<Player> players)
         {
             Players = players;
+            Table = new();
         }
 
         public void StartGame()
         {
-            Table.Deck.CreateDeck();
-            Table.Deck.Shuffle();
-            Table.Deck.ChooseTrump();
-
             foreach (var player in Players)
                 Rules.GiveCardToPlayer(player, Table);
 

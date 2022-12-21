@@ -88,15 +88,11 @@ namespace Durak
         public static string CreateJustifyString(string text, int width)
         {
             var freeSpace = width - text.Length - 2;
-            int leftSpace;
-            int rightSpace;
+            int leftSpace = freeSpace / 2;
+            int rightSpace = freeSpace / 2 + 1;
             if (freeSpace % 2 == 0)
-                leftSpace = rightSpace = freeSpace / 2;
-            else
-            {
-                leftSpace = freeSpace / 2 + 1;
-                rightSpace = freeSpace / 2;
-            }
+                rightSpace--;
+
             return VerticalBorder + new string(' ', leftSpace) + text + new string(' ', rightSpace) + VerticalBorder;
         }
 
@@ -119,7 +115,7 @@ namespace Durak
 
     public class MenuScreen : Screen
     {
-        public string Title;
+        public readonly string Title;
         public List<string> Menu;
 
         public MenuScreen(string title, List<string> menu)
@@ -130,10 +126,13 @@ namespace Durak
 
         public override List<string> CreateScreen()
         {
-            var width = Card.Width + 6;
+            var width = Math.Max(Card.Width, Title.Length) + 6;
+            if (width % 2 == 1)
+                width++;
+
             var mainMenuScreen = new List<string>();
-            var emptyLine = VerticalBorder + new string(' ', width - 2) + VerticalBorder;
-            var buttonBorder = VerticalBorder + "  " + CreateBorder(1) + "  " + VerticalBorder;
+            var emptyLine = CreateJustifyString("", width);
+            var buttonBorder = CreateJustifyString(CreateBorder(1), width);
 
             CreateTitle(mainMenuScreen, Title, width);
             mainMenuScreen.Add(emptyLine);
@@ -142,15 +141,19 @@ namespace Durak
             {
                 mainMenuScreen.Add(buttonBorder);
                 if (SelectedIndex == i)
-                    mainMenuScreen.Add(string.Format("{0} {1}{2}  {0}", VerticalBorder, SelectedIndexChar, CreateJustifyString(Menu[i].ToString(), Card.Width)));
+                    mainMenuScreen.Add(CreateJustifyString(SelectedIndexChar + CreateJustifyString(Menu[i], Card.Width), width));
                 else
-                    mainMenuScreen.Add(string.Format("{0}  {1}  {0}", VerticalBorder, CreateJustifyString(Menu[i].ToString(), Card.Width)));
+                    mainMenuScreen.Add(CreateJustifyString(CreateJustifyString(Menu[i], Card.Width), width));
 
                 mainMenuScreen.Add(buttonBorder);
                 mainMenuScreen.Add(emptyLine);
             }
 
             mainMenuScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
+
+            Console.WindowWidth = Math.Min(width + 3, Console.LargestWindowWidth);
+            Console.WindowHeight = Math.Min(mainMenuScreen.Count + 2, Console.LargestWindowHeight);
+
             return mainMenuScreen;
         }
     }
@@ -169,14 +172,17 @@ namespace Durak
         public override List<string> CreateScreen()
         {
             var playerScreen = new List<string>();
-            var width = string.Format("{0}      {1}      {0}", VerticalBorder, Player.Hand[0].ToString()).Length;
-            var emptyLine = VerticalBorder + new string(' ', width - 2) + VerticalBorder;
-            var cardBorder = VerticalBorder + "      " + CreateBorder(1) + "      " + VerticalBorder;
+            var width = Math.Max(Card.Width, Player.NickName.Length + 1 + Move[0].Length) + 6;
+            if (width % 2 == 1)
+                width++;
+
+            var emptyLine = CreateJustifyString(" ", width);
+            var cardBorder = CreateJustifyString(CreateBorder(1), width);
 
             CreateTitle(playerScreen, Player.NickName + ", " + Move[0], width);
             playerScreen.Add(emptyLine);
             playerScreen.Add(cardBorder);
-            playerScreen.Add(string.Format("{0}      {1}      {0}", VerticalBorder, CreateJustifyString("Рука", Card.Width)));
+            playerScreen.Add(CreateJustifyString(CreateJustifyString("Рука", Card.Width), width));
             playerScreen.Add(cardBorder);
             playerScreen.Add(emptyLine);
 
@@ -184,21 +190,25 @@ namespace Durak
             {
                 playerScreen.Add(cardBorder);
                 if (SelectedIndex == i)
-                    playerScreen.Add(string.Format("{0}     {1}{2}      {0}", VerticalBorder, SelectedIndexChar, Player.Hand[i].ToString()));
+                    playerScreen.Add(CreateJustifyString(SelectedIndexChar + Player.Hand[i].ToString(), width));
                 else
-                    playerScreen.Add(string.Format("{0}      {1}      {0}", VerticalBorder, Player.Hand[i].ToString()));
+                    playerScreen.Add(CreateJustifyString(Player.Hand[i].ToString(), width));
                 playerScreen.Add(cardBorder);
                 playerScreen.Add(emptyLine);
             }
 
             playerScreen.Add(cardBorder);
             if (SelectedIndex == Player.Hand.Count)
-                playerScreen.Add(string.Format("{0}     {1}{2}      {0}", VerticalBorder, SelectedIndexChar, CreateJustifyString(Move[1], Card.Width)));
+                playerScreen.Add(CreateJustifyString(SelectedIndexChar + CreateJustifyString(Move[1].ToString(), Card.Width), width));
             else
-                playerScreen.Add(string.Format("{0}      {1}      {0}", VerticalBorder, CreateJustifyString(Move[1], Card.Width)));
+                playerScreen.Add(CreateJustifyString(CreateJustifyString(Move[1], Card.Width), width));
             playerScreen.Add(cardBorder);
 
             playerScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
+
+            Console.WindowWidth = Math.Min(width + 1, Console.LargestWindowWidth) + 1 + Card.Width * 2 + 5;
+            Console.WindowHeight = Math.Min(playerScreen.Count + 2, Console.LargestWindowHeight);
+
             return playerScreen;
         }
     }
@@ -216,29 +226,27 @@ namespace Durak
         {
             var width = Card.Width * 2 + 5;
             var tableScreen = new List<string>();
-            var emptyLine = VerticalBorder + new string(' ', width - 2) + VerticalBorder;
-            var cardsBorder = VerticalBorder + " " + CreateBorder(2) + ' ' + VerticalBorder;
+            var emptyLine = CreateJustifyString(" ", width);
+            var cardsBorder = CreateJustifyString(CreateBorder(2), width);
 
             CreateTitle(tableScreen, "Стол", width);
             tableScreen.Add(emptyLine);
             tableScreen.Add(cardsBorder);
-            tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, CreateJustifyString("Атака", Card.Width),
-                                                                             CreateJustifyString("Защита", Card.Width)));
+            tableScreen.Add(CreateJustifyString(CreateJustifyString("Атака", Card.Width) + ' ' + CreateJustifyString("Защита", Card.Width), width));
             tableScreen.Add(cardsBorder);
             tableScreen.Add(emptyLine);
 
             for (int i = 0; i < Table.AttackCards.Length; i++)
             {
                 tableScreen.Add(cardsBorder);
-                tableScreen.Add(string.Format("{0} {1} {2} {0}", VerticalBorder, GetCard(Table.AttackCards[i]),
-                                                                                 GetCard(Table.DefendCards[i])));
+                tableScreen.Add(CreateJustifyString(GetCard(Table.AttackCards[i]) + ' ' + GetCard(Table.DefendCards[i]), width));
                 tableScreen.Add(cardsBorder);
                 tableScreen.Add(emptyLine);
             }
 
-            tableScreen.Add(VerticalBorder + " " + AngleBorder + new string(HorizontalBorder, width - 6) + AngleBorder + ' ' + VerticalBorder);
-            tableScreen.Add(string.Format("{0} {1} {0}", VerticalBorder, CreateJustifyString("Козырь - " + Table.Deck.Trumb, width - 4)));
-            tableScreen.Add(VerticalBorder + " " + AngleBorder + new string(HorizontalBorder, width - 6) + AngleBorder + ' ' + VerticalBorder);
+            tableScreen.Add(CreateJustifyString(AngleBorder + new string(HorizontalBorder, width - 6) + AngleBorder, width));
+            tableScreen.Add(CreateJustifyString(CreateJustifyString("Козырь - " + Table.Deck.Trumb, width - 4), width));
+            tableScreen.Add(CreateJustifyString(AngleBorder + new string(HorizontalBorder, width - 6) + AngleBorder, width));
             tableScreen.Add(emptyLine);
 
             tableScreen.Add(AngleBorder + new string(HorizontalBorder, width - 2) + AngleBorder);
@@ -248,7 +256,7 @@ namespace Durak
         static string GetCard(Card card)
         {
             if (card == null)
-                return '|' + new string(' ', Card.Width - 2) + '|';
+                return CreateJustifyString(" ", Card.Width);
             return card.ToString();
         }
     }

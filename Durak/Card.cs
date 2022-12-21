@@ -3,8 +3,8 @@
     public class Card : IComparable<Card>
     {
         public static int Width = 20;
-        public Power Power;
-        public Mark Mark;
+        public readonly Power Power;
+        public readonly Mark Mark;
 
         public Card(Power power, Mark mark)
         {
